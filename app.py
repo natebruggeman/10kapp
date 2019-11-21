@@ -38,6 +38,11 @@ def after_request(response):
     return response
 
 
+CORS(skill, origins=['http://localhost:3000'], supports_credentials=True) 
+
+app.register_blueprint(skill, url_prefix='/api/v1/skills')
+
+
 @app.route('/')
 def index():
     return 'hello Nate and Conrad'
@@ -48,6 +53,8 @@ def index():
 if __name__ == '__main__':
 	models.initialize()
 	app.run(debug=DEBUG, port=PORT)
+
+
 
 
 
