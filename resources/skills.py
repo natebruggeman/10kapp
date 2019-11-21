@@ -28,7 +28,12 @@ def create_skills():
 	return jsonify(data=skill_dict, status={"code": 201, "message": "Success"})
 
 
-
+# show dat route
+@skill.route('/<id>', methods=["GET"])
+def get_one_skill(id):
+    print(id)
+    skill = models.Skill.get_by_id(id)
+    return jsonify(data=model_to_dict(skill), status={"code": 200, "message": "Success"})
 
 
 
