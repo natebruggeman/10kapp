@@ -79,7 +79,7 @@ def get_logged_in_user():
 		return jsonify(data={}, status={
 			'code': 401,
 			'message': "No user is currently logged in."
-		}), 401
+		})
 	else: 
 		user_dict = model_to_dict(current_user)
 		user_dict.pop('password')
@@ -90,6 +90,16 @@ def get_logged_in_user():
 
 
 
+
+
+@users.route('/logout', methods=['GET'])
+def logout():
+	logout_user()
+
+	return jsonify(data={}, status={
+		'code': 200,
+		'message': "Successfully logged out "
+		})
 
 
 
