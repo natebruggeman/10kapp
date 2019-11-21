@@ -13,20 +13,20 @@ users = Blueprint('users', 'users')
 
 @users.route('/register', methods=['POST'])
 def register():
-  payload = request.get_json()
-  payload['email'].lower() 
+	payload = request.get_json()
+	payload['email'].lower() 
 
-  try: 
-    models.User.get(models.User.email == payload['email'])
-    return jsonify(data={}, status={'code': 401, "message": "A user with that email already exists"})
+	try: 
+		models.User.get(models.User.email == payload['email'])
+		return jsonify(data={}, status={'code': 401, "message": "A user with that email already exists"}), 401
 
-  except models.DoesNotExist:
-    payload['password'] = generate_password_hash(payload['password'])
-    user = models.User.create(**payload)
-    login_user(user)
-    user_dict = model_to_dict(user)
-    del user_dict['password']
-    return jsonify(data=user_dict, status={'code': 201, 'message': 'Successfully registered {}'.format(user_dict['email'])})
+	except models.DoesNotExist:
+		payload['password'] = generate_password_hash(payload['password'])
+		user = models.User.create(**payload)
+		login_user(user)
+		user_dict = model_to_dict(user)
+		del user_dict['password']
+		return jsonify(data=user_dict, status={'code': 201, 'message': 'Successfully registered {}'.format(user_dict['email'])}), 201
 
 
 
@@ -35,24 +35,22 @@ def register():
 
 @users.route('/login', methods=['POST'])
 def login():
-  payload = request.get_json()
+	payload = request.get_json()
 
-  try:
+	try:
 
-    user = models.User.get(models.User.email == payload['email'])
-    user_dict = model_to_dict(user) 
-    if(check_password_hash(user_dict['password'], payload['password'])):
-      login_user(user) 
-      del user_dict['password']
-      return jsonify(data=user_dict, status={'code': 200, 'message': "Succesfully logged in {}".format(user_dict['email'])})
+		user = models.User.get(models.User.email == payload['email'])
+		user_dict = model_to_dict(user) 
+		if(check_password_hash(user_dict['password'], payload['password'])):
+			login_user(user) 
+			del user_dict['password']
+			return jsonify(data=user_dict, status={'code': 200, 'message': "Succesfully logged in {}".format(user_dict['email'])}), 200
 
-    else:
-      print('password is wrong')
-      return jsonify(data={}, status={'code': 401, 'message': 'Email or password is incorrect'})
+		else:
+			return jsonify(data={}, status={'code': 401, 'message': 'Email or password is incorrect'}), 401
 
-  except models.DoesNotExist:
-    print('email is incorrect')
-    return jsonify(data={}, status={'code': 401, 'message': 'Email or password is incorrect'})
+	except models.DoesNotExist:
+		return jsonify(data={}, status={'code': 401, 'message': 'Email or password is incorrect'}), 401
 
 
 
@@ -79,14 +77,14 @@ def get_logged_in_user():
 		return jsonify(data={}, status={
 			'code': 401,
 			'message': "No user is currently logged in."
-		})
+		}), 401
 	else: 
 		user_dict = model_to_dict(current_user)
 		user_dict.pop('password')
 		return jsonify(data=user_dict, status={
 			'code': 200, 
 			'message': "Current user is {}".format(user_dict['email'])
-		})  
+		}), 200
 
 
 
@@ -95,11 +93,10 @@ def get_logged_in_user():
 @users.route('/logout', methods=['GET'])
 def logout():
 	logout_user()
-
 	return jsonify(data={}, status={
 		'code': 200,
 		'message': "Successfully logged out "
-		})
+		}), 200
 
 
 
