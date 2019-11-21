@@ -2,7 +2,7 @@ from flask import Flask, jsonify, g
 from flask_cors import CORS
 from flask_login import LoginManager
 from resources.skills import skill
-
+from resources.users import users
 
 import models
 
@@ -25,6 +25,17 @@ def load_user(userid):
 	except models.DoesNotExist:
 		return None	
 
+@login_manager.unauthorized_handler
+def unauthorized():
+	return jsonify(data={
+		'error': 'User not logged in.'
+		}, status={
+		'code': 401,
+		'message': "You must be logged in to access that resource."
+	}), 401
+
+
+
 
 @app.before_request
 def before_request():
@@ -39,8 +50,10 @@ def after_request(response):
 
 
 CORS(skill, origins=['http://localhost:3000'], supports_credentials=True) 
+CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
 
 app.register_blueprint(skill, url_prefix='/api/v1/skills')
+app.register_blueprint(users, url_prefix='/api/v1/users')
 
 
 @app.route('/')

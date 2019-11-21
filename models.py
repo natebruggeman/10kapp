@@ -15,7 +15,6 @@ class User(UserMixin, Model):
         database = DATABASE
 
 
-
 class Skill(Model):
     goal = CharField()
     objective = CharField()
@@ -28,6 +27,6 @@ class Skill(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([Skill], safe=True)
+    DATABASE.create_tables([User, Skill], safe=True)
     print("Tables Created")
     DATABASE.close()
