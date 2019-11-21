@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, g 
 from flask_cors import CORS
 from flask_login import LoginManager
+from resources.skills import skill
 
 
 import models
@@ -37,7 +38,6 @@ def after_request(response):
     return response
 
 
-
 @app.route('/')
 def index():
     return 'hello Nate and Conrad'
@@ -45,6 +45,11 @@ def index():
 
 
 
-
 if __name__ == '__main__':
-    app.run(debug=DEBUG, port=PORT)
+	models.initialize()
+	app.run(debug=DEBUG, port=PORT)
+
+
+
+
+
