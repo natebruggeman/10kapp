@@ -31,9 +31,23 @@ def create_skills():
 # show dat route
 @skill.route('/<id>', methods=["GET"])
 def get_one_skill(id):
-    print(id)
     skill = models.Skill.get_by_id(id)
     return jsonify(data=model_to_dict(skill), status={"code": 200, "message": "Success"})
+
+
+#update
+@skill.route('/<id>', methods=['PUT'])
+def update_one_skill(id):
+    data = request.get_json()
+    query = models.Skill.update(**data).where(models.Skill.id == id)
+    query.execute()
+    skill = models.Skill.get_by_id(id)
+    skill_dict = model_to_dict(skill)
+    return jsonify(data=skill_dict, status={'code': 200, 'message': 'Updated successfully'})
+
+
+
+
 
 
 
