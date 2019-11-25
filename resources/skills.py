@@ -143,9 +143,18 @@ def skills_index():
 @login_required
 def create_skills():
 	payload = request.get_json()
-	skill = models.Skill.create(**payload)
+
+	# skill = models.Skill.create(**payload)
+	skill = models.Skill.create(goal=payload['goal'],
+		owner=current_user.id,
+		objective=payload["objective"],
+		time=payload["time"]
+		)
+
 	print(skill.__dict__)
+
 	skill_dict = model_to_dict(skill)
+	skill_dict['owner'].pop('password')
 	return jsonify(data=skill_dict, status={"code": 200, "message": "Success"}) 
 
 # show dat route
