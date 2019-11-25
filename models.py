@@ -17,8 +17,10 @@ class User(UserMixin, Model):
 
 class Skill(Model):
     goal = CharField()
+    owner = ForeignKeyField(User, backref='skills')
     objective = CharField()
     time = IntegerField()
+
     
 
     class Meta:
@@ -28,5 +30,5 @@ class Skill(Model):
 def initialize():
     DATABASE.connect()
     DATABASE.create_tables([User, Skill], safe=True)
-    print("Tables Created")
+    print("Created tables if they weren't already there")
     DATABASE.close()
