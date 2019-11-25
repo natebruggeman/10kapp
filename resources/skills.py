@@ -195,14 +195,47 @@ def create_skills():
 
 
 #update
-@skill_bp.route('/<id>', methods=['PUT'])
+# @skill_bp.route('/<id>', methods=['PUT'])
+# @login_required
+# def update_skill(id):
+#     payload = request.get_json()
+
+#     query = models.Skill.update(**payload).where(models.Skill.id == id)
+#     query.execute()
+
+#     skill.save()
+
+#     skill = models.Skill.get_by_id(id)
+#     skill_dict = model_to_dict(skill)
+
+#     return jsonify(data=skill_dict, status={'code': 200, 'message': 'Updated successfully'}) 
+
+@skill_bp.route('/<id>', methods=["PUT"])
+@login_required
 def update_skill(id):
     payload = request.get_json()
-    query = models.Skill.update(**payload).where(models.Skill.id == id)
-    query.execute()
-    skill = models.Skill.get_by_id(id)
-    skill_dict = model_to_dict(skill)
-    return jsonify(data=skill_dict, status={'code': 200, 'message': 'Updated successfully'}) 
+
+
+    skill = models.Skill.get_by_id(id) 
+    
+ 
+    if(skill.owner.id == current_user.id):
+
+        skill.goal = payload['goal'] if 'goal' in payload else None 
+        skill.objective = payload['objective'] if 'objective' in payload else None 
+        skill.time = payload['time'] if 'time' in payload else None 
+
+
+        skill.save()
+
+        skill_dict = model_to_dict(skill)
+        skill_dict['owner'].pop('password')
+
+        return jsonify(data=skill_dict, status={
+                'code': 200,
+                'message': 'Resource updated successfully'
+            }), 200    
+
 
 # deletion route 
 @skill_bp.route('/<id>', methods=["Delete"])

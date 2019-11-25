@@ -58,12 +58,6 @@ def after_request(response):
 
 
 
-# @app.route('/')
-# def index():
-#     return 'Hello Nate(sexy) and Conrad'
-
-
-
 
 if __name__ == '__main__':
 	models.initialize()

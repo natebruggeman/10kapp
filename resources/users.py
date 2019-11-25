@@ -18,7 +18,6 @@ def register():
 
 	try: 
 		models.User.get(models.User.email == payload['email'])
-
 		return jsonify(data={}, status={'code': 401, "message": "A user with that email already exists"}), 401
 
 	except models.DoesNotExist:
